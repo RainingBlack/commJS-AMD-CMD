@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>learn AMD CMD</title>
+    <style>
+
+    </style>
+</head>
+<body>
+<div class="MVVMCON">
+    <h1>简介</h1>
+    <p><span>对于CMD和AMD的认识要追溯到SeaJS和RequireJS了，当时两种模块化技术都是用过，但是有一天有人问我这两个有什么区别时，我有点蒙了，说都遵循commJS规范，但是也只能说这些了，下面就详细的看一下什么是CommJS规范，而AMD和CMD到底有什么区别吧。</span></p>
+    <p><span>对于commJS其实可以追溯到js的创建之初，js的领域主要是在浏览器端进行的，但是一门优秀的语言怎么可能这么狭隘呢，所以commJS就定义了很多的API提供给非网页端应用使用，渐渐的就发展起来，于是有了我们熟悉的nodeJS和webpack，
+        可能这样说的话，就很容易理解了吧，commJS扩大了js的生存领域，js也就有了能和python，java这种语言扳手腕的能力了。</span></p>
+    <p><h2>什么是commJS规范？</h2></p>
+    <p><span>    commJS主要有三个模块的定义：模块加载require，模块定义exports，模块标识module，是不是和nodeJS产生了很多的联系，有种见到老乡的感觉。</span></p>
+    <p><span>   这里有人就有疑问了，为什么浏览器不能兼容commJS？其实浏览器缺失了几个node的环境：require,export,module,global，其实我们可以尝试简单的尝试在网页端模拟实现，详见commJS/index.js，</span></p>
+    <p><span>简单描述:就是实现require+exports+module，简单实现commJS，原理是，把文件的所有内容代理到对象节点，然后实现exports的对外输出，有点闭包的概念，然后实现各模块之间的调用</span></p>
+
+
+    <h2>AMD和CMD</h2>
+    <p><span>首先说AMD，A是Asynchronous的缩写，异步的意思，为什么这么说的，虽然上面的代码实现了commJS的简单功能，但是有一个问题commJS毕竟是为了服务端设计的，所有文件的加载都是读取硬盘，很快的就会完成整个流程。</span></p>
+    <p><span>但是浏览器是什么，涉及到的网络请求等等一系列等待，如果生搬硬套，那么会造成网页卡顿假死，所以才会有了AMD，所有的都是异步加载的流程，不耽误之后的代码运行，下面我们看：</span></p>
+    <p><span>AMD的require：require([m1,m2],function(){})</span></p>
+    <p><span>不知道你注意了没，变成了两个参数：一个是声明模块，一个是回调函数，这就印证了，AMD的异步加载，加载完之后进行回调的流程实现。</span></p>
+    <p><span>下面就是CMD了，他也是为了让commJS这种模式快速在web端兼容的一种策略，也是异步的，但是会和AMD在运行上有很大的差异！</span></p>
+    <h2>AMD VS CMD</h2> <span>推荐：<a href="https://github.com/seajs/seajs/issues/277">官方介绍</a>&nbsp;&nbsp;&nbsp;建议看下面的评论推荐！</span>
+    <p><span>都会并行加载文件：这个没什么异议</span></p>
+    <p><span>执行不同：AMD（预执行） CMD（懒执行） ，AMD是在加载的过程中会预先执行文件，这就是为什么我们在模块中写一个日志会自动打印的原因，而CMD是在需要的时候才执行文件的</span></p>
+    <p><span>AMD优缺点：AMD加载快速，并且可以并行分析，非常快，但是加载后的执行是异步的，很难控制顺序，不好把控！</span></p>
+    <p><span>CMD优缺点：CMD因为是懒执行，所以本身就在运行时是有时序性的，所以流程很清晰，但是因为都是同步的，如果按需加载时一时需求很多，那么就会造成运行时间累加，造成卡顿</span></p>
+
+</div>
+<script src="commJS/index.js"></script>
+<script src="commJS/exa.js"></script>
+<script>
+    window.onload =function () {
+        /*------------commJS   start--------------*/
+        var foo = commJS.require("./exa");
+        foo("hello world!");
+        /*------------commJS   end----------------*/
+    }
+</script>
+</body>
+</html>
